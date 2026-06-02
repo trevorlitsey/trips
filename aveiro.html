@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aveiro — A Half-Day from Porto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f8f3e7;
+    --paper-2:#fffaf0;
+    --ink:#15243a;
+    --ink-soft:#3c4a5e;
+    --azul:#1b5a86;
+    --azul-deep:#103a59;
+    --coral:#dd4e36;
+    --ochre:#e0a23b;
+    --line:#d9cdb3;
+    --shadow:24px 24px 0 rgba(16,58,89,.08);
+    --r:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Hanken Grotesk',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* paper grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(rgba(21,36,58,.025) 1px,transparent 1px);
+    background-size:4px 4px;mix-blend-mode:multiply;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 22px;position:relative;z-index:1;}
+
+  /* ---------- stripe motif (Costa Nova nod) ---------- */
+  .stripes{height:14px;width:100%;display:flex;}
+  .stripes span{flex:1;}
+  .stripes span:nth-child(1){background:var(--coral);}
+  .stripes span:nth-child(2){background:var(--ochre);}
+  .stripes span:nth-child(3){background:var(--azul);}
+  .stripes span:nth-child(4){background:#3a8f7e;}
+  .stripes span:nth-child(5){background:var(--coral);}
+  .stripes span:nth-child(6){background:var(--ochre);}
+  .stripes span:nth-child(7){background:var(--azul);}
+  .stripes span:nth-child(8){background:#3a8f7e;}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;min-height:78vh;display:flex;align-items:flex-end;
+    background:linear-gradient(180deg,rgba(16,58,89,.15),rgba(16,58,89,.72)),
+      url('img/aveiro/hero-moliceiro.jpg') center 40%/cover no-repeat;
+    color:#fff;}
+  .hero .wrap{padding-top:48px;padding-bottom:46px;}
+  .kicker{font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;
+    font-weight:600;color:var(--ochre);margin-bottom:14px;
+    opacity:0;animation:rise .8s .1s forwards;}
+  h1{font-family:'Fraunces',serif;font-weight:900;line-height:.94;
+    font-size:clamp(3rem,11vw,6.4rem);letter-spacing:-.02em;
+    text-shadow:0 2px 30px rgba(0,0,0,.25);
+    opacity:0;animation:rise .8s .22s forwards;}
+  h1 em{font-style:italic;font-weight:500;color:var(--paper);}
+  .lede{font-size:clamp(1rem,2.4vw,1.22rem);max-width:36ch;margin-top:18px;
+    color:rgba(255,255,255,.92);opacity:0;animation:rise .8s .34s forwards;}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;
+    opacity:0;animation:rise .8s .46s forwards;}
+  .chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
+    backdrop-filter:blur(6px);padding:8px 15px;border-radius:100px;
+    font-size:.82rem;font-weight:600;letter-spacing:.02em;}
+  .chip b{color:var(--ochre);font-weight:700;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
+
+  /* ---------- sections ---------- */
+  section{padding:64px 0;}
+  .eyebrow{font-family:'Hanken Grotesk';font-size:.76rem;letter-spacing:.3em;
+    text-transform:uppercase;font-weight:700;color:var(--coral);margin-bottom:10px;}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.9rem,5vw,2.9rem);
+    letter-spacing:-.015em;line-height:1.02;color:var(--azul-deep);margin-bottom:8px;}
+  .section-intro{max-width:62ch;color:var(--ink-soft);font-size:1.05rem;margin-top:6px;}
+
+  /* ---------- timeline ---------- */
+  .timeline{margin-top:42px;position:relative;}
+  .timeline::before{content:"";position:absolute;left:78px;top:8px;bottom:8px;width:2px;
+    background:repeating-linear-gradient(var(--line) 0 7px,transparent 7px 14px);}
+  @media(max-width:620px){.timeline::before{left:58px;}}
+  .stop{display:grid;grid-template-columns:78px 1fr;gap:0 26px;margin-bottom:30px;
+    position:relative;}
+  @media(max-width:620px){.stop{grid-template-columns:58px 1fr;gap:0 16px;}}
+  .stop.in{animation:rise .6s forwards;}
+  .time{font-family:'Fraunces',serif;font-weight:600;font-size:1.18rem;
+    text-align:right;color:var(--azul);padding-top:10px;}
+  .node{position:relative;}
+  .node::before{content:"";position:absolute;left:-26px;top:14px;width:13px;height:13px;
+    border-radius:50%;background:var(--coral);border:3px solid var(--paper);
+    box-shadow:0 0 0 2px var(--coral);}
+  @media(max-width:620px){.node::before{left:-16px;}}
+  .card{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--r);
+    padding:20px 22px;box-shadow:0 1px 0 rgba(16,58,89,.04);}
+  .card h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.28rem;color:var(--ink);
+    margin-bottom:5px;letter-spacing:-.01em;}
+  .card p{color:var(--ink-soft);font-size:.97rem;}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--azul);background:rgba(27,90,134,.1);
+    padding:3px 9px;border-radius:6px;margin-top:10px;}
+
+  /* ---------- photo figures ---------- */
+  figure{margin:0;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);
+    background:var(--paper-2);box-shadow:var(--shadow);}
+  figure img{width:100%;display:block;aspect-ratio:16/10;object-fit:cover;
+    transition:transform .8s ease;}
+  figure:hover img{transform:scale(1.04);}
+  figcaption{padding:13px 18px;font-size:.85rem;color:var(--ink-soft);
+    border-top:1px solid var(--line);}
+  figcaption b{color:var(--ink);font-weight:700;}
+  .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:38px;}
+  @media(max-width:640px){.photo-grid{grid-template-columns:1fr;}}
+
+  /* ---------- trains ---------- */
+  .trains{background:var(--azul-deep);color:#eaf2f8;border-radius:26px;
+    padding:44px 34px;margin-top:8px;position:relative;overflow:hidden;}
+  .trains::after{content:"";position:absolute;right:-60px;bottom:-60px;width:240px;height:240px;
+    border-radius:50%;background:radial-gradient(circle,rgba(224,162,59,.25),transparent 70%);}
+  .trains .eyebrow{color:var(--ochre);}
+  .trains h2{color:#fff;}
+  .note{font-size:.86rem;color:#9fc0d6;margin-top:8px;max-width:60ch;}
+  .legs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px;}
+  @media(max-width:640px){.legs{grid-template-columns:1fr;}}
+  .leg{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
+    border-radius:16px;padding:20px;}
+  .leg h4{font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;color:var(--ochre);
+    margin-bottom:14px;letter-spacing:.01em;}
+  .run{display:flex;justify-content:space-between;align-items:baseline;
+    padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.14);}
+  .run:last-child{border-bottom:none;}
+  .run .t{font-family:'Fraunces',serif;font-size:1.12rem;font-weight:600;color:#fff;}
+  .run .t span{color:#9fc0d6;font-weight:400;font-size:.92rem;padding:0 6px;}
+  .run .meta{font-size:.78rem;color:#9fc0d6;}
+  .run.pick{background:rgba(224,162,59,.14);margin:4px -10px;padding:9px 10px;
+    border-radius:9px;border-bottom:none;}
+  .run.pick .meta{color:var(--ochre);font-weight:700;}
+  .fare{display:flex;gap:26px;flex-wrap:wrap;margin-top:24px;
+    padding-top:22px;border-top:1px solid rgba(255,255,255,.16);}
+  .fare div span{display:block;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:#9fc0d6;}
+  .fare div b{font-family:'Fraunces',serif;font-size:1.5rem;color:#fff;font-weight:600;}
+
+  /* ---------- buttons ---------- */
+  .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;}
+  .btn{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+    font-weight:700;font-size:.95rem;padding:14px 22px;border-radius:100px;
+    transition:transform .15s ease,box-shadow .15s ease;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn-go{background:var(--ochre);color:var(--azul-deep);box-shadow:0 6px 0 #b87f1f;}
+  .btn-go:hover{box-shadow:0 8px 0 #b87f1f;}
+  .btn-ghost{background:transparent;color:#eaf2f8;border:1.5px solid rgba(255,255,255,.4);}
+  .btn-ghost:hover{background:rgba(255,255,255,.08);}
+  .btn-arrow::after{content:"→";font-size:1.05em;}
+
+  /* ---------- tips ---------- */
+  .tips{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:38px;}
+  @media(max-width:640px){.tips{grid-template-columns:1fr;}}
+  .tip{background:var(--paper-2);border:1px solid var(--line);border-left:4px solid var(--coral);
+    border-radius:12px;padding:18px 20px;}
+  .tip h4{font-family:'Fraunces',serif;font-weight:600;font-size:1.08rem;color:var(--ink);margin-bottom:4px;}
+  .tip p{font-size:.92rem;color:var(--ink-soft);}
+
+  /* extension box */
+  .ext{background:linear-gradient(180deg,rgba(221,78,54,.06),rgba(224,162,59,.06));
+    border:1px dashed var(--coral);border-radius:var(--r);padding:24px 26px;margin-top:38px;}
+  .ext h3{font-family:'Fraunces',serif;color:var(--coral);font-size:1.3rem;font-weight:600;margin-bottom:6px;}
+  .ext p{color:var(--ink-soft);font-size:.98rem;}
+
+  footer{padding:40px 0 60px;text-align:center;color:var(--ink-soft);font-size:.85rem;}
+  footer a{color:var(--azul);}
+  .disclaimer{max-width:60ch;margin:0 auto 18px;font-size:.82rem;color:#8a7f68;}
+  a.inline{color:var(--azul);font-weight:600;text-decoration:underline;text-underline-offset:2px;}
+</style>
+</head>
+<body>
+
+<div class="stripes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">Porto · Day Trips</div>
+    <h1>Aveiro<br><em>in half a day</em></h1>
+    <p class="lede">Canals, painted moliceiro boats and Art Nouveau facades — an easy morning south of Porto, home by mid-afternoon.</p>
+    <div class="chips">
+      <span class="chip">🚆 <b>~1h15</b> by train</span>
+      <span class="chip">🎟️ <b>€3.95</b> each way</span>
+      <span class="chip">🕙 Out by <b>09:00</b>, back by <b>15:30</b></span>
+    </div>
+  </div>
+</header>
+
+<!-- ITINERARY -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The Plan</div>
+    <h2>A morning, paced gently</h2>
+    <p class="section-intro">Built around a mid-morning arrival so the canal cruise lands before the midday crowds, with a long seafood lunch to close. Times are a guide — shift everything earlier or later by one train as you like.</p>
+
+    <div class="timeline">
+      <div class="stop"><div class="time">08:51</div><div class="node"><div class="card">
+        <h3>Train from Porto</h3>
+        <p>Board the Urban (Linha de Aveiro) at São Bento — central, photogenic, and where trains wait on the platform well before departure. Validate your Siga card on the yellow pedestal first.</p>
+        <span class="tag">São Bento → Aveiro · ~1h15</span>
+      </div></div></div>
+
+      <div class="stop"><div class="time">10:06</div><div class="node"><div class="card">
+        <h3>Arrive &amp; walk in</h3>
+        <p>It's a flat 1 km (≈12 min) down Avenida Dr. Lourenço Peixinho to the central canal. Pause at the old station beside the new one — its facade is covered in beautiful blue azulejo tile panels.</p>
+        <span class="tag">Easy walk</span>
+      </div></div></div>
+
+      <div class="stop"><div class="time">10:25</div><div class="node"><div class="card">
+        <h3>Moliceiro canal cruise</h3>
+        <p>A 45-minute glide through the canals on a brightly painted moliceiro from the Rossio / Cojo pier. The best orientation to the city — you'll pass the salt pans, the fish market and the Art Nouveau waterfront. Book ahead in summer.</p>
+        <span class="tag">45 min · ~€15</span>
+      </div></div></div>
+
+      <div class="stop"><div class="time">11:20</div><div class="node"><div class="card">
+        <h3>Art Nouveau walk</h3>
+        <p>Aveiro's early-1900s wealth left a dense cluster of <em>Arte Nova</em> buildings — flowing facades, tile, wrought iron. Start at the Museu Arte Nova, then wander Rua João Mendonça and the Cojo canal banks. A gentler cousin to the Bauhaus stuff, but the craft hits the same note.</p>
+        <span class="tag">Self-guided · ~45 min</span>
+      </div></div></div>
+
+      <div class="stop"><div class="time">12:05</div><div class="node"><div class="card">
+        <h3>Ovos moles stop</h3>
+        <p>The local sweet: egg-yolk cream in thin wafer shells, shaped like shells and fish, sold from little wooden barrels. Confeitaria Peixinho is the classic name. Grab a few, then keep them for the train.</p>
+        <span class="tag">Snack</span>
+      </div></div></div>
+
+      <div class="stop"><div class="time">12:30</div><div class="node"><div class="card">
+        <h3>Seafood lunch</h3>
+        <p>Lunch around Praça do Peixe (the old fish-market square) — grilled fish, lagoon eel if you're game, and a glass of crisp vinho verde from the surrounding region. Lively and unhurried.</p>
+        <span class="tag">~1h15</span>
+      </div></div></div>
+
+      <div class="stop"><div class="time">13:46</div><div class="node"><div class="card">
+        <h3>Train back to Porto</h3>
+        <p>Walk back to the station and catch the early-afternoon Urban home. No reservations on this train — your ticket works on any departure, so there's no rush if lunch runs long.</p>
+        <span class="tag">Aveiro → São Bento · ~1h15</span>
+      </div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTOS -->
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="eyebrow">Where We're Going</div>
+    <h2>The sights</h2>
+    <div class="photo-grid">
+      <figure>
+        <img src="img/aveiro/moliceiro-canal.jpg" alt="A painted moliceiro boat on an Aveiro canal">
+        <figcaption><b>The canals &amp; moliceiros</b> — the painted boats and the central canal, the heart of the morning.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/aveiro/ovos-moles.jpg" alt="Ovos moles, the egg-yolk sweet of Aveiro">
+        <figcaption><b>Ovos moles</b> — Aveiro's convent sweet, sold in little wooden barrels.</figcaption>
+      </figure>
+    </div>
+
+    <div class="ext">
+      <h3>Want to stretch it to a full day?</h3>
+      <p>Add <b>Costa Nova</b>, a 15-minute bus or taxi ride away, where the fishermen's <em>palheiros</em> are painted in bold vertical stripes right along the water. It's one of the most photogenic spots in Portugal — and very on-brand for a stripe-loving eye. Doing this turns the half-day into a relaxed full day, so plan a later return train.</p>
+      <figure style="margin-top:18px;">
+        <img src="img/aveiro/costa-nova-palheiros.jpg" alt="The striped palheiro houses of Costa Nova">
+        <figcaption><b>Costa Nova</b> — the candy-striped palheiros lining the lagoon at Costa Nova do Prado.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINS -->
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="trains">
+      <div class="eyebrow">Getting There</div>
+      <h2>Trains &amp; tickets</h2>
+      <p class="note">The Urban train (Comboios Urbanos do Porto, Linha de Aveiro) is the one to take: cheap, frequent, and valid on any departure so you keep your flexibility. Skip the pricier express (IC/AP) unless you want the 55-minute ride. <strong>Times below are a representative pattern — always confirm the live timetable before you go, as services vary by weekday/weekend.</strong></p>
+
+      <div class="legs">
+        <div class="leg">
+          <h4>Outbound · São Bento → Aveiro</h4>
+          <div class="run pick"><span class="t">08:51 <span>→</span> 10:06</span><span class="meta">Recommended</span></div>
+          <div class="run"><span class="t">09:24 <span>→</span> 10:39</span><span class="meta">Urban</span></div>
+          <div class="run"><span class="t">10:09 <span>→</span> 11:24</span><span class="meta">Urban</span></div>
+          <div class="run"><span class="t">10:39 <span>→</span> 11:54</span><span class="meta">Urban</span></div>
+        </div>
+        <div class="leg">
+          <h4>Return · Aveiro → São Bento</h4>
+          <div class="run pick"><span class="t">13:46 <span>→</span> 15:01</span><span class="meta">Recommended</span></div>
+          <div class="run"><span class="t">14:30 <span>→</span> 15:45</span><span class="meta">Urban</span></div>
+          <div class="run"><span class="t">15:30 <span>→</span> 16:45</span><span class="meta">Urban</span></div>
+          <div class="run"><span class="t">16:30 <span>→</span> 17:45</span><span class="meta">Urban</span></div>
+        </div>
+      </div>
+
+      <div class="fare">
+        <div><span>Single fare</span><b>€3.95</b></div>
+        <div><span>Both ways</span><b>€7.90</b></div>
+        <div><span>Siga card</span><b>€0.50</b></div>
+        <div><span>Frequency</span><b>2× / hr</b></div>
+      </div>
+
+      <div class="btns">
+        <a class="btn btn-go btn-arrow" href="https://www.cp.pt/passageiros/en" target="_blank" rel="noopener">Buy tickets · CP</a>
+        <a class="btn btn-ghost" href="https://www.cp.pt/info/documents/d/cp/comboios-urbanos-porto-aveiro" target="_blank" rel="noopener">Live timetable (PDF)</a>
+        <a class="btn btn-ghost" href="https://www.civitatis.com/en/aveiro/moliceiro-boat-trip/" target="_blank" rel="noopener">Book a moliceiro cruise</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPS -->
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="eyebrow">Good to Know</div>
+    <h2>Practical notes</h2>
+    <div class="tips">
+      <div class="tip"><h4>The Siga card</h4><p>Fares load onto a €0.50 rechargeable Siga card, bought at any station machine. Keep it — top it up for other day trips (Braga, Guimarães) and skip the fee next time.</p></div>
+      <div class="tip"><h4>Validate before boarding</h4><p>Touch your card to the yellow pedestal on the platform before every journey. The Urban ticket isn't tied to a specific train.</p></div>
+      <div class="tip"><h4>Start at São Bento</h4><p>It's central and a small terminus, so platforms are a short walk and trains wait early. You can also board at Campanhã a few minutes later.</p></div>
+      <div class="tip"><h4>Best light, fewer crowds</h4><p>A weekday morning means quieter canals and better photos. Summer weekends get busy, especially toward Costa Nova.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="disclaimer">Train times shown are an illustrative pattern to plan around, not a live schedule — confirm exact departures on the <a href="https://www.cp.pt/passageiros/en" target="_blank" rel="noopener">CP website</a> close to your travel date. Fares and cruise prices current as of 2026.</p>
+
+    <p class="disclaimer">photo credits: <a href="https://commons.wikimedia.org/wiki/File:Passeio_de_moliceiro.jpg" target="_blank" rel="noopener">passeio de moliceiro</a>, <a href="https://commons.wikimedia.org/wiki/File:Confeitaria_Peixinho_-_Ovos_Moles.jpg" target="_blank" rel="noopener">confeitaria peixinho — ovos moles</a>, and <a href="https://commons.wikimedia.org/wiki/File:Casas_T%C3%ADpicas_da_Costa_Nova_(52644972036).jpg" target="_blank" rel="noopener">casas típicas da costa nova</a> via wikimedia commons. photos are hosted locally here so the page does not depend on hotlinked image delivery.</p>
+    <p>Made for a Porto day-tripper · Boa viagem 🇵🇹</p>
+  </div>
+</footer>
+
+<script>
+  // staggered reveal for timeline stops
+  const obs=new IntersectionObserver((es)=>{
+    es.forEach((e,i)=>{if(e.isIntersecting){e.target.style.animationDelay=(e.target.dataset.d||0)+'ms';e.target.classList.add('in');obs.unobserve(e.target);}});
+  },{threshold:.2});
+  document.querySelectorAll('.stop').forEach((s,i)=>{s.dataset.d=(i%3)*90;obs.observe(s);});
+</script>
+</body>
+</html>
