@@ -40,7 +40,7 @@
   section{padding:72px 0;border-top:1px solid var(--line);}
   .eyebrow{
     font-family:'DM Mono',monospace;
-    font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    font-size:12.5px;letter-spacing:.26em;text-transform:uppercase;
     color:var(--rust);margin-bottom:14px;display:flex;align-items:center;gap:10px;
   }
   .eyebrow::before{content:"";width:26px;height:2px;background:var(--rust);display:inline-block;}
@@ -55,13 +55,13 @@
   }
   .hero svg.topo{position:absolute;inset:0;width:100%;height:100%;opacity:.18;}
   .hero-inner{position:relative;max-width:1080px;margin:0 auto;padding:96px 24px 64px;}
-  .hero .kicker{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);margin-bottom:22px;}
+  .hero .kicker{font-family:'DM Mono',monospace;font-size:13.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber);margin-bottom:22px;}
   .hero h1{
     font-size:clamp(46px,9vw,104px);font-weight:900;line-height:.92;letter-spacing:-.02em;
     margin-bottom:18px;
   }
   .hero h1 em{font-style:italic;font-weight:500;color:var(--amber);display:block;font-size:.42em;letter-spacing:0;margin-top:8px;}
-  .hero p.sub{font-size:19px;max-width:54ch;color:#d9d2c2;}
+  .hero p.sub{font-size:20px;max-width:54ch;color:#e2dccf;}
   .route-tag{
     display:inline-flex;align-items:center;gap:12px;margin-top:30px;
     font-family:'DM Mono',monospace;font-size:14px;letter-spacing:.05em;color:var(--cream);
@@ -77,21 +77,28 @@
   .stats div{padding:26px 8px 4px;}
   .stats .n{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,46px);font-weight:600;color:var(--cream);line-height:1;}
   .stats .n span{color:var(--amber);font-size:.5em;}
-  .stats .l{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#b9c4b6;margin-top:8px;}
+  .stats .l{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#ced7c9;margin-top:8px;}
   @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr);}}
+  .glance{margin-top:28px;background:rgba(244,239,228,.08);border:1px solid rgba(244,239,228,.24);border-radius:10px;padding:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .glance div{min-width:0;}
+  .glance .k{display:block;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#d0d8cc;margin-bottom:4px;}
+  .glance .v{display:block;font-size:17px;color:var(--cream);font-weight:700;}
+  @media(max-width:760px){.glance{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:460px){.glance{grid-template-columns:1fr;}}
 
   /* ---------- map ---------- */
   #map{height:460px;border-radius:8px;border:1px solid var(--line);background:var(--bone);box-shadow:0 18px 40px -24px rgba(28,58,48,.5);}
-  .map-note{font-family:'DM Mono',monospace;font-size:12px;color:var(--granite);margin-top:14px;letter-spacing:.03em;}
+  .map-note{font-family:'DM Mono',monospace;font-size:13px;color:#566057;margin-top:14px;letter-spacing:.03em;}
 
   /* ---------- elevation chart ---------- */
   .chart{display:flex;align-items:flex-end;gap:10px;height:240px;margin-top:30px;padding:0 4px;}
   .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
   .bar .fill{width:100%;background:linear-gradient(var(--moss),var(--pine));border-radius:5px 5px 0 0;position:relative;transition:height .9s cubic-bezier(.2,.8,.2,1);}
   .bar.queen .fill{background:linear-gradient(var(--rust),#7e3318);}
-  .bar .val{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink);margin-bottom:7px;}
-  .bar .day{font-family:'DM Mono',monospace;font-size:11px;color:var(--granite);margin-top:9px;letter-spacing:.05em;text-align:center;}
-  .chart-legend{font-family:'DM Mono',monospace;font-size:12px;color:var(--granite);margin-top:18px;display:flex;gap:22px;flex-wrap:wrap;}
+  .bar .val{font-family:'DM Mono',monospace;font-size:13px;color:var(--ink);margin-bottom:7px;}
+  .bar .day{font-family:'DM Mono',monospace;font-size:12px;color:#566057;margin-top:9px;letter-spacing:.05em;text-align:center;}
+  .bar .callout{font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);margin-bottom:10px;text-align:center;white-space:nowrap;}
+  .chart-legend{font-family:'DM Mono',monospace;font-size:13px;color:#566057;margin-top:18px;display:flex;gap:22px;flex-wrap:wrap;}
   .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:middle;}
 
   /* ---------- itinerary ---------- */
@@ -104,9 +111,9 @@
     font-family:'Fraunces',serif;font-size:54px;font-weight:900;color:var(--bone);line-height:.8;
     border-right:2px solid var(--amber);padding-right:18px;
   }
-  .stage .num small{display:block;font-family:'DM Mono',monospace;font-size:10px;font-weight:400;letter-spacing:.18em;color:var(--granite);margin-top:8px;}
+  .stage .num small{display:block;font-family:'DM Mono',monospace;font-size:11px;font-weight:400;letter-spacing:.16em;color:#566057;margin-top:8px;}
   .stage h3{font-size:24px;font-weight:600;color:var(--pine);margin-bottom:4px;letter-spacing:-.01em;}
-  .stage .metrics{font-family:'DM Mono',monospace;font-size:13px;color:var(--rust);margin-bottom:12px;display:flex;gap:18px;flex-wrap:wrap;}
+  .stage .metrics{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--rust);margin-bottom:12px;display:flex;gap:18px;flex-wrap:wrap;}
   .stage .metrics span{color:var(--granite);}
   .stage p{color:#3a4038;max-width:62ch;}
   .rest{background:var(--bone);border-radius:6px;}
@@ -122,7 +129,7 @@
   .card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:28px;}
   .card.dark{background:var(--pine);color:var(--cream);border-color:transparent;}
   .card.feature{box-shadow:0 22px 50px -30px rgba(28,58,48,.55);border:1px solid var(--amber);}
-  .card .tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--rust);margin-bottom:14px;}
+  .card .tag{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);margin-bottom:14px;}
   .card.dark .tag{color:var(--amber);}
   .card h3{font-size:22px;font-weight:600;margin-bottom:6px;color:inherit;}
   .card .price{font-family:'Fraunces',serif;font-size:40px;font-weight:600;margin:10px 0 2px;color:var(--pine);}
@@ -136,14 +143,14 @@
   .card.dark ul.line li{border-color:rgba(244,239,228,.18);}
   .card.dark ul.line li .c{color:var(--amber);}
   .total{margin-top:18px;padding-top:16px;border-top:2px solid var(--amber);display:flex;justify-content:space-between;align-items:baseline;}
-  .total .lab{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--granite);}
+  .total .lab{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#566057;}
   .total .amt{font-family:'Fraunces',serif;font-size:30px;font-weight:600;color:var(--pine);}
   .card.dark .total .amt{color:var(--cream);}
 
   /* generic prose blocks */
   .note{display:grid;grid-template-columns:140px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid var(--line);}
   .note:last-child{border-bottom:none;}
-  .note .k{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);padding-top:3px;}
+  .note .k{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);padding-top:3px;}
   .note p{color:#3a4038;max-width:64ch;}
   @media(max-width:640px){.note{grid-template-columns:1fr;gap:6px;}}
 
@@ -153,7 +160,7 @@
   .leg .arrow{color:var(--amber);font-size:22px;}
   .leg .desc{flex:1;min-width:200px;font-size:14.5px;color:#3a4038;}
   .leg .desc b{color:var(--pine);}
-  .pill{display:inline-block;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:var(--bone);color:var(--moss);border-radius:30px;padding:5px 12px;}
+  .pill{display:inline-block;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;background:var(--bone);color:var(--moss);border-radius:30px;padding:5px 12px;}
   .warn{background:#fbf2dd;border:1px solid var(--amber);border-radius:8px;padding:18px 22px;margin-top:24px;font-size:14.5px;color:#5a4a1e;}
   .warn b{color:var(--rust);}
 
@@ -170,21 +177,21 @@
   .hero-photo{align-self:stretch;min-height:520px;border:1px solid rgba(244,239,228,.28);border-radius:10px;overflow:hidden;box-shadow:0 30px 70px -36px rgba(0,0,0,.75);background:#0d211b;position:relative;}
   .hero-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.96) contrast(1.05);}
   .hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,58,48,0) 45%,rgba(28,58,48,.72));}
-  .hero-photo .cap{position:absolute;left:18px;right:18px;bottom:16px;z-index:1;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#efe7d8;}
+  .hero-photo .cap{position:absolute;left:18px;right:18px;bottom:16px;z-index:1;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#efe7d8;}
   .photo-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-top:34px;}
   .photo-stack{display:grid;gap:24px;}
   .photo-card{background:#fff;border:1px solid var(--line);border-radius:9px;overflow:hidden;box-shadow:0 22px 46px -34px rgba(28,58,48,.55);}
   .photo-card img{width:100%;height:280px;object-fit:cover;display:block;}
   .photo-card.tall img{height:584px;}
-  .photo-card .caption{padding:14px 16px 16px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.5;letter-spacing:.04em;text-transform:uppercase;color:var(--granite);}
+  .photo-card .caption{padding:14px 16px 16px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.55;letter-spacing:.04em;text-transform:uppercase;color:#566057;}
   .photo-card .caption b{color:var(--rust);font-weight:500;}
   .inline-photo{margin-top:22px;border-radius:8px;overflow:hidden;border:1px solid var(--line);}
   .inline-photo img{display:block;width:100%;height:260px;object-fit:cover;}
-  .inline-photo span{display:block;background:#fff;padding:10px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--granite);letter-spacing:.04em;text-transform:uppercase;}
+  .inline-photo span{display:block;background:#fff;padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#566057;letter-spacing:.04em;text-transform:uppercase;}
   .stage-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px;max-width:760px;}
   .stage-shot{margin:0;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 16px 34px -30px rgba(28,58,48,.58);}
   .stage-shot img{display:block;width:100%;height:168px;object-fit:cover;}
-  .stage-shot figcaption{font-family:'DM Mono',monospace;font-size:10.5px;line-height:1.45;letter-spacing:.06em;text-transform:uppercase;color:var(--granite);padding:9px 11px;background:#fff;}
+  .stage-shot figcaption{font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.5;letter-spacing:.05em;text-transform:uppercase;color:#566057;padding:10px 12px;background:#fff;}
   .rest .stage-shot{background:#fbf8ef;}
   .rest .stage-shot figcaption{background:#fbf8ef;}
   @media(max-width:880px){.hero-layout{grid-template-columns:1fr}.hero-photo{min-height:360px}.photo-grid{grid-template-columns:1fr}.photo-card.tall img{height:340px}.stage-gallery{grid-template-columns:1fr}.stage-shot img{height:220px}}
@@ -212,7 +219,7 @@
       <div class="hero-copy">
         <div class="kicker">The Original Way · El Camino Primitivo</div>
         <h1>Asturias<br>to Santiago
-          <em>320 km of the oldest pilgrim road, ridden off-road</em>
+          <em>322 km of the oldest pilgrim road, ridden off-road</em>
         </h1>
         <p class="sub">A self-guided mountain-bike crossing of the wildest Camino — forest singletrack, drovers' trails and granite mountain passes from Oviedo to the cathedral square.</p>
         <div class="route-tag mono"><b>OVD</b> Oviedo &nbsp;→&nbsp; <b>SCQ</b> Santiago de Compostela</div>
@@ -224,10 +231,16 @@
     </div>
 
     <div class="stats">
-      <div><div class="n">322<span> km</span></div><div class="l">Total distance</div></div>
+      <div><div class="n">322<span> km</span></div><div class="l">Measured distance</div></div>
       <div><div class="n">6</div><div class="l">Riding days</div></div>
       <div><div class="n">~8,035<span> m</span></div><div class="l">Total climbing</div></div>
       <div><div class="n">8</div><div class="l">Days incl. travel</div></div>
+    </div>
+    <div class="glance" aria-label="route at a glance">
+      <div><span class="k">start</span><span class="v">Oviedo</span></div>
+      <div><span class="k">finish</span><span class="v">Santiago de Compostela</span></div>
+      <div><span class="k">hardest day</span><span class="v">Pola → A Fonsagrada</span></div>
+      <div><span class="k">best fit</span><span class="v">mountain-bike riders</span></div>
     </div>
   </div>
 </header>
@@ -237,9 +250,9 @@
   <div class="wrap">
     <div class="eyebrow">The Line</div>
     <h2>Six stages across two regions</h2>
-    <p class="lede">Out of the Asturian capital, over the Cordillera Cantábrica, down into Galicia, then joining the busy Camino Francés for the final run to Santiago.</p>
+    <p class="lede">Six riding stages, plus arrival in Oviedo and departure from Santiago: out of the Asturian capital, over the Cordillera Cantábrica, down into Galicia, then joining the Camino Francés for the final run to Santiago.</p>
     <div id="map"></div>
-    <p class="map-note">● Overnight stops · ◆ Melide, where the Primitivo meets the Camino Francés. Interactive — drag and zoom. Route shown is indicative.</p>
+    <p class="map-note">Interactive overview map — drag and zoom. Orange line is indicative. Dots mark overnight stops; the diamond marks Melide, where the Primitivo meets the Camino Francés.</p>
   </div>
 </section>
 
@@ -278,7 +291,7 @@
     <div class="chart" id="chart">
       <div class="bar"><div class="val mono">1186</div><div class="fill" style="height:50%"></div><div class="day">D2<br>Salas</div></div>
       <div class="bar"><div class="val mono">1354</div><div class="fill" style="height:57%"></div><div class="day">D3<br>Pola</div></div>
-      <div class="bar queen"><div class="val mono">2375</div><div class="fill" style="height:100%"></div><div class="day">D4<br>Fonsagrada</div></div>
+      <div class="bar queen"><div class="callout">queen stage</div><div class="val mono">2375</div><div class="fill" style="height:100%"></div><div class="day">D4<br>Puerto del Palo<br>Fonsagrada</div></div>
       <div class="bar"><div class="val mono">1200</div><div class="fill" style="height:51%"></div><div class="day">D5<br>Lugo</div></div>
       <div class="bar"><div class="val mono">1060</div><div class="fill" style="height:45%"></div><div class="day">D6<br>Sedor</div></div>
       <div class="bar"><div class="val mono">860</div><div class="fill" style="height:36%"></div><div class="day">D7<br>Santiago</div></div>
@@ -417,7 +430,7 @@
   <div class="wrap">
     <div class="eyebrow">Getting There — from Minneapolis</div>
     <h2>Fly open-jaw: in to Oviedo, out of Santiago</h2>
-    <p class="lede">There are no nonstop flights from MSP to either airport — everything connects, usually through Madrid or Dublin. Booking a multi-city (open-jaw) ticket means you never have to backtrack the 320 km you just rode.</p>
+    <p class="lede">There are no nonstop flights from MSP to either airport — everything connects, usually through Madrid or Dublin. Booking a multi-city (open-jaw) ticket means you never have to backtrack the 322 km you just rode.</p>
 
     <div class="flightrow">
       <div class="leg">
