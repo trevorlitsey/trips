@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camino Primitivo by Mountain Bike — Trip Dossier</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Hanken+Grotesk:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
+
+<style>
+  :root{
+    --pine:#1c3a30;
+    --moss:#3d5a45;
+    --granite:#6b7268;
+    --cream:#f4efe4;
+    --bone:#e8e0cd;
+    --amber:#d99a2b;
+    --rust:#b5532a;
+    --ink:#20231d;
+    --line:rgba(28,58,48,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Hanken Grotesk',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'DM Mono',monospace;}
+  h1,h2,h3,.disp{font-family:'Fraunces',serif;}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  section{padding:72px 0;border-top:1px solid var(--line);}
+  .eyebrow{
+    font-family:'DM Mono',monospace;
+    font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--rust);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--rust);display:inline-block;}
+  h2{font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.05;letter-spacing:-.01em;margin-bottom:8px;color:var(--pine);}
+  .lede{font-size:18px;color:var(--moss);max-width:60ch;margin-bottom:36px;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    background:var(--pine);color:var(--cream);
+    padding:0;border-top:none;
+  }
+  .hero svg.topo{position:absolute;inset:0;width:100%;height:100%;opacity:.18;}
+  .hero-inner{position:relative;max-width:1080px;margin:0 auto;padding:96px 24px 64px;}
+  .hero .kicker{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);margin-bottom:22px;}
+  .hero h1{
+    font-size:clamp(46px,9vw,104px);font-weight:900;line-height:.92;letter-spacing:-.02em;
+    margin-bottom:18px;
+  }
+  .hero h1 em{font-style:italic;font-weight:500;color:var(--amber);display:block;font-size:.42em;letter-spacing:0;margin-top:8px;}
+  .hero p.sub{font-size:19px;max-width:54ch;color:#d9d2c2;}
+  .route-tag{
+    display:inline-flex;align-items:center;gap:12px;margin-top:30px;
+    font-family:'DM Mono',monospace;font-size:14px;letter-spacing:.05em;color:var(--cream);
+    border:1px solid rgba(244,239,228,.3);border-radius:40px;padding:9px 18px;
+  }
+  .route-tag b{color:var(--amber);font-weight:500;}
+
+  /* stat band */
+  .stats{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid rgba(244,239,228,.2);margin-top:54px;
+  }
+  .stats div{padding:26px 8px 4px;}
+  .stats .n{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,46px);font-weight:600;color:var(--cream);line-height:1;}
+  .stats .n span{color:var(--amber);font-size:.5em;}
+  .stats .l{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#b9c4b6;margin-top:8px;}
+  @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---------- map ---------- */
+  #map{height:460px;border-radius:8px;border:1px solid var(--line);background:var(--bone);box-shadow:0 18px 40px -24px rgba(28,58,48,.5);}
+  .map-note{font-family:'DM Mono',monospace;font-size:12px;color:var(--granite);margin-top:14px;letter-spacing:.03em;}
+
+  /* ---------- elevation chart ---------- */
+  .chart{display:flex;align-items:flex-end;gap:10px;height:240px;margin-top:30px;padding:0 4px;}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+  .bar .fill{width:100%;background:linear-gradient(var(--moss),var(--pine));border-radius:5px 5px 0 0;position:relative;transition:height .9s cubic-bezier(.2,.8,.2,1);}
+  .bar.queen .fill{background:linear-gradient(var(--rust),#7e3318);}
+  .bar .val{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink);margin-bottom:7px;}
+  .bar .day{font-family:'DM Mono',monospace;font-size:11px;color:var(--granite);margin-top:9px;letter-spacing:.05em;text-align:center;}
+  .chart-legend{font-family:'DM Mono',monospace;font-size:12px;color:var(--granite);margin-top:18px;display:flex;gap:22px;flex-wrap:wrap;}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:middle;}
+
+  /* ---------- itinerary ---------- */
+  .stage{
+    display:grid;grid-template-columns:92px 1fr;gap:28px;
+    padding:30px 0;border-bottom:1px solid var(--line);
+  }
+  .stage:last-child{border-bottom:none;}
+  .stage .num{
+    font-family:'Fraunces',serif;font-size:54px;font-weight:900;color:var(--bone);line-height:.8;
+    border-right:2px solid var(--amber);padding-right:18px;
+  }
+  .stage .num small{display:block;font-family:'DM Mono',monospace;font-size:10px;font-weight:400;letter-spacing:.18em;color:var(--granite);margin-top:8px;}
+  .stage h3{font-size:24px;font-weight:600;color:var(--pine);margin-bottom:4px;letter-spacing:-.01em;}
+  .stage .metrics{font-family:'DM Mono',monospace;font-size:13px;color:var(--rust);margin-bottom:12px;display:flex;gap:18px;flex-wrap:wrap;}
+  .stage .metrics span{color:var(--granite);}
+  .stage p{color:#3a4038;max-width:62ch;}
+  .rest{background:var(--bone);border-radius:6px;}
+  .rest .num{color:var(--granite);border-right-color:var(--granite);}
+  @media(max-width:640px){
+    .stage{grid-template-columns:64px 1fr;gap:18px;}
+    .stage .num{font-size:38px;padding-right:12px;}
+  }
+
+  /* ---------- cards / two-col ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr;}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:28px;}
+  .card.dark{background:var(--pine);color:var(--cream);border-color:transparent;}
+  .card.feature{box-shadow:0 22px 50px -30px rgba(28,58,48,.55);border:1px solid var(--amber);}
+  .card .tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--rust);margin-bottom:14px;}
+  .card.dark .tag{color:var(--amber);}
+  .card h3{font-size:22px;font-weight:600;margin-bottom:6px;color:inherit;}
+  .card .price{font-family:'Fraunces',serif;font-size:40px;font-weight:600;margin:10px 0 2px;color:var(--pine);}
+  .card.dark .price{color:var(--cream);}
+  .card .price small{font-family:'DM Mono',monospace;font-size:13px;font-weight:400;color:var(--granite);}
+  .card.dark .price small{color:#b9c4b6;}
+  ul.line{list-style:none;margin-top:16px;}
+  ul.line li{padding:9px 0;border-top:1px dashed var(--line);display:flex;justify-content:space-between;gap:16px;font-size:14.5px;}
+  ul.line li:first-child{border-top:none;}
+  ul.line li .c{font-family:'DM Mono',monospace;color:var(--rust);white-space:nowrap;}
+  .card.dark ul.line li{border-color:rgba(244,239,228,.18);}
+  .card.dark ul.line li .c{color:var(--amber);}
+  .total{margin-top:18px;padding-top:16px;border-top:2px solid var(--amber);display:flex;justify-content:space-between;align-items:baseline;}
+  .total .lab{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--granite);}
+  .total .amt{font-family:'Fraunces',serif;font-size:30px;font-weight:600;color:var(--pine);}
+  .card.dark .total .amt{color:var(--cream);}
+
+  /* generic prose blocks */
+  .note{display:grid;grid-template-columns:140px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid var(--line);}
+  .note:last-child{border-bottom:none;}
+  .note .k{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);padding-top:3px;}
+  .note p{color:#3a4038;max-width:64ch;}
+  @media(max-width:640px){.note{grid-template-columns:1fr;gap:6px;}}
+
+  .flightrow{display:grid;grid-template-columns:1fr;gap:16px;}
+  .leg{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .leg .code{font-family:'Fraunces',serif;font-weight:900;font-size:26px;color:var(--pine);}
+  .leg .arrow{color:var(--amber);font-size:22px;}
+  .leg .desc{flex:1;min-width:200px;font-size:14.5px;color:#3a4038;}
+  .leg .desc b{color:var(--pine);}
+  .pill{display:inline-block;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:var(--bone);color:var(--moss);border-radius:30px;padding:5px 12px;}
+  .warn{background:#fbf2dd;border:1px solid var(--amber);border-radius:8px;padding:18px 22px;margin-top:24px;font-size:14.5px;color:#5a4a1e;}
+  .warn b{color:var(--rust);}
+
+  footer{background:var(--ink);color:#a9b0a4;padding:54px 0;border-top:none;}
+  footer a{color:var(--amber);text-decoration:none;}
+  footer .wrap{font-size:13px;}
+  footer h3{color:var(--cream);font-size:18px;margin-bottom:14px;}
+  footer .src{font-family:'DM Mono',monospace;font-size:12px;line-height:2;}
+  .disclaimer{margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:#7e857a;max-width:70ch;}
+
+  /* ---------- real photography ---------- */
+  .hero-layout{position:relative;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(280px,.72fr);gap:34px;align-items:end;}
+  .hero-copy{min-width:0;}
+  .hero-photo{align-self:stretch;min-height:520px;border:1px solid rgba(244,239,228,.28);border-radius:10px;overflow:hidden;box-shadow:0 30px 70px -36px rgba(0,0,0,.75);background:#0d211b;position:relative;}
+  .hero-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.96) contrast(1.05);}
+  .hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,58,48,0) 45%,rgba(28,58,48,.72));}
+  .hero-photo .cap{position:absolute;left:18px;right:18px;bottom:16px;z-index:1;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#efe7d8;}
+  .photo-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-top:34px;}
+  .photo-stack{display:grid;gap:24px;}
+  .photo-card{background:#fff;border:1px solid var(--line);border-radius:9px;overflow:hidden;box-shadow:0 22px 46px -34px rgba(28,58,48,.55);}
+  .photo-card img{width:100%;height:280px;object-fit:cover;display:block;}
+  .photo-card.tall img{height:584px;}
+  .photo-card .caption{padding:14px 16px 16px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.5;letter-spacing:.04em;text-transform:uppercase;color:var(--granite);}
+  .photo-card .caption b{color:var(--rust);font-weight:500;}
+  .inline-photo{margin-top:22px;border-radius:8px;overflow:hidden;border:1px solid var(--line);}
+  .inline-photo img{display:block;width:100%;height:260px;object-fit:cover;}
+  .inline-photo span{display:block;background:#fff;padding:10px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--granite);letter-spacing:.04em;text-transform:uppercase;}
+  @media(max-width:880px){.hero-layout{grid-template-columns:1fr}.hero-photo{min-height:360px}.photo-grid{grid-template-columns:1fr}.photo-card.tall img{height:340px}}
+</style>
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero">
+  <svg class="topo" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="none" stroke="#f4efe4" stroke-width="1.1">
+      <path d="M-50,420 C200,360 380,470 560,400 740,330 920,440 1250,380"/>
+      <path d="M-50,460 C200,400 380,510 560,440 740,370 920,480 1250,420"/>
+      <path d="M-50,380 C220,300 400,430 580,350 760,270 940,400 1250,330"/>
+      <path d="M-50,340 C240,250 420,400 600,300 780,210 960,360 1250,280"/>
+      <path d="M-50,300 C260,210 440,370 620,260 800,160 980,330 1250,240"/>
+      <path d="M-50,250 C280,150 460,330 640,210 820,100 1000,290 1250,190"/>
+      <path d="M-50,200 C300,90 480,300 660,160 840,40 1020,250 1250,140"/>
+      <path d="M-50,500 C200,450 380,540 560,480 740,420 920,520 1250,470"/>
+      <path d="M-50,540 C200,500 380,580 560,520 740,470 920,560 1250,520"/>
+    </g>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-layout">
+      <div class="hero-copy">
+        <div class="kicker">The Original Way · El Camino Primitivo</div>
+        <h1>Asturias<br>to Santiago
+          <em>320 km of the oldest pilgrim road, ridden off-road</em>
+        </h1>
+        <p class="sub">A self-guided mountain-bike crossing of the wildest Camino — forest singletrack, drovers' trails and granite mountain passes from Oviedo to the cathedral square.</p>
+        <div class="route-tag mono"><b>OVD</b> Oviedo &nbsp;→&nbsp; <b>SCQ</b> Santiago de Compostela</div>
+      </div>
+      <figure class="hero-photo">
+        <img src="img/camino-primitivo/hero-asturias.jpg" alt="Asturian track on the Camino Primitivo">
+        <figcaption class="cap">real trail texture · camino primitivo, asturias</figcaption>
+      </figure>
+    </div>
+
+    <div class="stats">
+      <div><div class="n">322<span> km</span></div><div class="l">Total distance</div></div>
+      <div><div class="n">6</div><div class="l">Riding days</div></div>
+      <div><div class="n">~8,035<span> m</span></div><div class="l">Total climbing</div></div>
+      <div><div class="n">8</div><div class="l">Days incl. travel</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== MAP ===================== -->
+<section id="route">
+  <div class="wrap">
+    <div class="eyebrow">The Line</div>
+    <h2>Six stages across two regions</h2>
+    <p class="lede">Out of the Asturian capital, over the Cordillera Cantábrica, down into Galicia, then joining the busy Camino Francés for the final run to Santiago.</p>
+    <div id="map"></div>
+    <p class="map-note">● Overnight stops · ◆ Melide, where the Primitivo meets the Camino Francés. Interactive — drag and zoom. Route shown is indicative.</p>
+  </div>
+</section>
+
+
+<!-- ===================== PHOTOS ===================== -->
+<section id="photos">
+  <div class="wrap">
+    <div class="eyebrow">Field Notes</div>
+    <h2>What the route actually looks like</h2>
+    <p class="lede">A few real reference images from the line: Asturian mountain road, the Puerto del Palo atmosphere, Lugo's Roman walls and the cathedral finish in Santiago.</p>
+    <div class="photo-grid">
+      <figure class="photo-card tall">
+        <img src="img/camino-primitivo/puerto-del-palo.jpg" alt="Vanishing road at Puerto del Palo in Asturias">
+        <figcaption class="caption"><b>queen-stage mood</b> · puerto del palo, the high exposed crossing after Pola de Allande</figcaption>
+      </figure>
+      <div class="photo-stack">
+        <figure class="photo-card">
+          <img src="img/camino-primitivo/oviedo-cathedral.jpg" alt="Cathedral of Oviedo exterior">
+          <figcaption class="caption"><b>day 01</b> · Oviedo cathedral, start stamp and old-town launch point</figcaption>
+        </figure>
+        <figure class="photo-card">
+          <img src="img/camino-primitivo/lugo-walls.jpg" alt="Roman walls of Lugo">
+          <figcaption class="caption"><b>day 05</b> · Lugo's complete Roman walls, the best overnight culture stop</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ELEVATION ===================== -->
+<section id="profile">
+  <div class="wrap">
+    <div class="eyebrow">The Effort</div>
+    <h2>Daily climbing</h2>
+    <p class="lede">The route is front-loaded: the queen stage out of Pola de Allande over the Puerto del Palo is nearly 2,400 m of ascent in a single day. After Lugo it eases.</p>
+    <div class="chart" id="chart">
+      <div class="bar"><div class="val mono">1186</div><div class="fill" style="height:50%"></div><div class="day">D2<br>Salas</div></div>
+      <div class="bar"><div class="val mono">1354</div><div class="fill" style="height:57%"></div><div class="day">D3<br>Pola</div></div>
+      <div class="bar queen"><div class="val mono">2375</div><div class="fill" style="height:100%"></div><div class="day">D4<br>Fonsagrada</div></div>
+      <div class="bar"><div class="val mono">1200</div><div class="fill" style="height:51%"></div><div class="day">D5<br>Lugo</div></div>
+      <div class="bar"><div class="val mono">1060</div><div class="fill" style="height:45%"></div><div class="day">D6<br>Sedor</div></div>
+      <div class="bar"><div class="val mono">860</div><div class="fill" style="height:36%"></div><div class="day">D7<br>Santiago</div></div>
+    </div>
+    <div class="chart-legend">
+      <span><span class="swatch" style="background:var(--pine)"></span>Riding day</span>
+      <span><span class="swatch" style="background:var(--rust)"></span>Queen stage — Puerto del Palo</span>
+      <span>metres of ascent</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ITINERARY ===================== -->
+<section id="itinerary">
+  <div class="wrap">
+    <div class="eyebrow">Day by Day</div>
+    <h2>The full route</h2>
+    <p class="lede">Eight days end to end: arrive and acclimatise, six days in the saddle, depart Santiago. Distances and ascent below reflect the established mountain-bike line.</p>
+
+    <div class="stage rest">
+      <div class="num">01<small>Arrive</small></div>
+      <div>
+        <h3>Land in Oviedo</h3>
+        <div class="metrics">Non-riding · Asturias</div>
+        <p>Transfer in from Asturias airport (OVD). Collect your first stamp at the San Salvador cathedral, then spend the evening in the sidrerías — cider poured from overhead and proper Asturian cooking. Pick up the bike and check your setup tonight if the rental shop can deliver early.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="num">02<small>Ride</small></div>
+      <div>
+        <h3>Oviedo → Salas</h3>
+        <div class="metrics">52 km <span>·</span> +1,186 m</div>
+        <p>Out on quiet lanes, then forest singletrack down to the river Nora and racy riverside trail past the Peñaflor pinnacle into the market town of Grado. Climb the Alto de El Fresno and drop a fast 5 km descent to the Río Narcea before rolling into Salas under the Cordillera. A real warm-up, not a gentle one.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="num">03<small>Ride</small></div>
+      <div>
+        <h3>Salas → Pola de Allande</h3>
+        <div class="metrics">48 km <span>·</span> +1,354 m</div>
+        <p>A long, steady climb into the Cordillera past the isolated hamlet of Espina, then through Tineo — a Roman gold-mining town — and over the Alto de Guardia on stone paths to a technical descent. At Borres the Camino splits; the rideable line takes the forest-and-village trails down to Pola de Allande rather than the Hospitales walking route (see notes).</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="num">04<small>Queen</small></div>
+      <div>
+        <h3>Pola de Allande → A Fonsagrada</h3>
+        <div class="metrics">65 km <span>·</span> +2,375 m</div>
+        <p>The big one. A long climb to the Puerto del Palo, the high point of the whole route, then a technical descent on ancient paths and an 800 m-plus plunge into the Grandas valley on singletrack and switchbacks. Cross into Galicia at the Puerto del Acebo and finish in A Fonsagrada, the highest town in Galicia. Pace the morning — this is your hardest day by a wide margin.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="num">05<small>Ride</small></div>
+      <div>
+        <h3>A Fonsagrada → Lugo</h3>
+        <div class="metrics">57 km <span>·</span> +1,200 m</div>
+        <p>Climbing paths to the Alto de Montouto, with a ruined pilgrims' hospital and a Celtic burial chamber, then a long descent through Galician smallholdings where fields are still worked by hand. Roll into Lugo and walk its complete Roman walls in the evening — and eat the pulpo with a cold Albariño.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="num">06<small>Ride</small></div>
+      <div>
+        <h3>Lugo → Sedor</h3>
+        <div class="metrics">55 km <span>·</span> +1,060 m</div>
+        <p>Down to cross the Río Miño, along an old Roman road, over the open Hospital das Seixas moorland and into Melide — where you pick up the Camino Francés and the trail suddenly fills with pilgrims. Continue through oak and eucalyptus to a quiet overnight near Sedor, poised for the run-in.</p>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="num">07<small>Finish</small></div>
+      <div>
+        <h3>Sedor → Santiago de Compostela</h3>
+        <div class="metrics">45 km <span>·</span> +860 m</div>
+        <p>Through Arzúa and a maze of granite hamlets on corredoiras — ancient stone village paths that ride beautifully — past Lavacolla and up to Monte do Gozo for the first sight of the city. Then down to the Praza do Obradoiro and the cathedral. Collect your Compostela.</p>
+      </div>
+    </div>
+
+    <div class="stage rest">
+      <div class="num">08<small>Depart</small></div>
+      <div>
+        <h3>Santiago → home</h3>
+        <div class="metrics">Non-riding · Galicia</div>
+        <p>Hand back the bike and fly out of Santiago (SCQ). Worth tagging an extra night to see the cathedral's botafumeiro swing and decompress before the long haul back.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FLIGHTS ===================== -->
+<section id="flights">
+  <div class="wrap">
+    <div class="eyebrow">Getting There — from Minneapolis</div>
+    <h2>Fly open-jaw: in to Oviedo, out of Santiago</h2>
+    <p class="lede">There are no nonstop flights from MSP to either airport — everything connects, usually through Madrid or Dublin. Booking a multi-city (open-jaw) ticket means you never have to backtrack the 320 km you just rode.</p>
+
+    <div class="flightrow">
+      <div class="leg">
+        <span class="code">MSP</span><span class="arrow">→</span><span class="code">OVD</span>
+        <span class="desc"><b>Outbound to Oviedo (Asturias).</b> Typically 2 stops via a European hub — Aer Lingus through Dublin, or Delta / Iberia partners through Madrid then a short domestic hop to OVD. Plan on ~16–22 h door to door.</span>
+      </div>
+      <div class="leg">
+        <span class="code">SCQ</span><span class="arrow">→</span><span class="code">MSP</span>
+        <span class="desc"><b>Return from Santiago.</b> SCQ → Madrid (or Dublin) → MSP. Vueling and Iberia connect SCQ to the hubs several times daily.</span>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:24px;">
+      <div class="card">
+        <div class="tag">Fare estimate</div>
+        <h3>~$1,200–1,800</h3>
+        <p style="color:#3a4038;font-size:14.5px;margin-top:8px;">Round-trip economy, open-jaw, depending on season and how far ahead you book. Shoulder season (late spring / October) and early booking land nearer the low end. <b>Estimate only — no dates set; check Google Flights / Skyscanner live.</b></p>
+      </div>
+      <div class="card">
+        <div class="tag">On the ground</div>
+        <h3>Airport → Oviedo</h3>
+        <p style="color:#3a4038;font-size:14.5px;margin-top:8px;">Asturias airport sits ~40–45 min from Oviedo; an airport bus runs into the city for about €9. In Santiago the airport is a short taxi from the old town.</p>
+      </div>
+    </div>
+
+    <div class="warn">
+      <b>Timing watch:</b> Santiago (SCQ) airport is closed for runway renovation from <b>23 April to 27 May 2026</b>. If your trip lands in that window, fly home out of <b>La Coruña (LCG)</b> instead, about an hour from Santiago.
+    </div>
+  </div>
+</section>
+
+<!-- ===================== OUTFITTING ===================== -->
+<section id="outfitting">
+  <div class="wrap">
+    <div class="eyebrow">The Bike & Kit</div>
+    <h2>Outfitting it yourself</h2>
+    <p class="lede">Several shops specialise in Camino rentals — they deliver the bike to your Oviedo hotel and collect it in Santiago, so the one-way logistics are handled. Since you're carrying your own gear, you skip the luggage-transfer premium entirely.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="tag">Independent rental — recommended</div>
+        <h3>Rent the bike, book your own beds</h3>
+        <p style="color:#3a4038;font-size:14.5px;margin-top:8px;">Outfits like <b>Tournride</b>, <b>CCT Bike Rental</b>, <b>Bikeleon</b> and <b>Bicigrino</b> all do MTB rental with delivery to your start point and drop-off in Santiago. Rentals come with a repair kit, pump, lock and the option of a rack and panniers. You arrange accommodation as you go — albergues, pensións and casas rurales are spaced along every stage.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Carrying your own load</div>
+        <h3>Pack light, ride loaded</h3>
+        <p style="color:#3a4038;font-size:14.5px;margin-top:8px;">On the technical descents off the Puerto del Palo and the Grandas switchbacks, a <b>bikepacking setup</b> (seat pack + bar roll + frame bag) handles far better than heavy rear panniers. Rentals can supply a rack and panniers if you'd rather, but keep the weight low and central for the singletrack. Bring your own saddle and clipless pedals — the shops fit them to the rental.</p>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:8px;">
+      <div class="k">Bike type</div>
+      <p>A hardtail MTB is the standard rental for this route and the right tool for the rocky upper sections. A capable gravel bike can do most of it, but the Asturian descents reward a mountain bike. Skip the e-MTB — with your gravel-racing base you don't need it, and it adds a 7-day rental minimum.</p>
+    </div>
+    <div class="note">
+      <div class="k">Booking lead</div>
+      <p>Reserve at least a week ahead (more in summer); rentals usually carry a 5-day minimum, which the full route clears easily. Delivery to a hotel with a real reception desk is smoother than an auto-check-in apartment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRICING ===================== -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="eyebrow">What It Costs</div>
+    <h2>Self-booked vs. fully packaged</h2>
+    <p class="lede">Doing it independently — renting only the bike and booking your own beds — saves roughly a thousand dollars over an all-in operator package. Here's the side-by-side, per person, all figures excluding flights unless noted. Treat as estimates.</p>
+
+    <div class="grid2">
+      <!-- SELF BOOKED -->
+      <div class="card feature">
+        <div class="tag">Your plan — independent</div>
+        <h3>Self-booked</h3>
+        <div class="price">~$810–1,350 <small>land, ex-flights</small></div>
+        <ul class="line">
+          <li>MTB rental, 8 days, delivery + Santiago drop-off <span class="c">€280–340</span></li>
+          <li>Accommodation, 7 nights (albergues → casas rurales) <span class="c">€105–490</span></li>
+          <li>Food &amp; drink, ~8 days <span class="c">€260–360</span></li>
+          <li>Pilgrim credential + airport bus + incidentals <span class="c">€45</span></li>
+          <li>Luggage transfer <span class="c">€0 — you carry it</span></li>
+        </ul>
+        <div class="total"><span class="lab">+ flights ~$1,200–1,800</span><span class="amt">≈ $2,000–3,150 all-in</span></div>
+      </div>
+
+      <!-- PACKAGED -->
+      <div class="card dark">
+        <div class="tag">For comparison</div>
+        <h3>Fully packaged (Skedaddle)</h3>
+        <div class="price">$1,810–1,995 <small>tour, ex-flights</small></div>
+        <ul class="line">
+          <li>Self-guided tour (hotels, breakfasts, transfers, app) <span class="c">$1,810–1,995</span></li>
+          <li>MTB hire — <em>not</em> included, add on <span class="c">~$220–330</span></li>
+          <li>Luggage transferred between hotels <span class="c">included</span></li>
+          <li>Single room (if solo) <span class="c">supplement</span></li>
+        </ul>
+        <div class="total"><span class="lab">+ flights ~$1,200–1,800</span><span class="amt">≈ $3,230–4,130 all-in</span></div>
+      </div>
+    </div>
+
+    <div class="warn">
+      <b>The trade:</b> the package buys you hand-picked hotels, moved bags and zero planning. Self-booking trades that comfort for ~$1,000+ in savings and full control of where you sleep and eat — which, carrying your own kit, is exactly the brief.
+    </div>
+  </div>
+</section>
+
+<!-- ===================== NOTES ===================== -->
+<section id="notes">
+  <div class="wrap">
+    <div class="eyebrow">Before You Commit</div>
+    <h2>Practical notes</h2>
+
+    <div class="note">
+      <div class="k">Hospitales</div>
+      <p>The famous high route over the hospital ruins is a walkers' mountain path — largely hike-a-bike, not a ride. Even dedicated MTB operators take the Pola de Allande line instead. If you want to stand among the ruins you can detour and carry the bike up, but treat it as a pilgrimage moment, not a descent. The rideable off-road maximum is the Pola trails plus the singletrack and corredoiras that make up most of the route anyway.</p>
+    </div>
+    <div class="note">
+      <div class="k">The Compostela</div>
+      <div>
+        <p>To earn the certificate by bike you must ride at least the final 200 km and collect a couple of stamps a day in your credential. Starting in Oviedo (322 km) clears that comfortably.</p>
+        <figure class="inline-photo"><img src="img/camino-primitivo/santiago-obradoiro.jpg" alt="Santiago de Compostela cathedral at Obradoiro"><span>finish line · Praza do Obradoiro, Santiago de Compostela</span></figure>
+      </div>
+    </div>
+    <div class="note">
+      <div class="k">Best season</div>
+      <p>Late May–June and September–early October give the best mix of long days, settled weather and open accommodation. The high passes can be cold and fogbound; pack a layer even in summer. Avoid the deep shoulder months when mountain albergues thin out.</p>
+    </div>
+    <div class="note">
+      <div class="k">Grade</div>
+      <p>This is a genuine grade 3–4 mountain-bike route: singletrack, steep pitches and occasional very rocky sections where even strong riders dismount and push. Well within reach for a fit gravel racer — but it's a real ride, not a road tour with dirt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <h3>Sources &amp; fine print</h3>
+    <div class="src">
+      Stage distances, ascent &amp; route — Skedaddle self-guided MTB Camino Primitivo<br>
+      Independent rental — Tournride, CCT Bike Rental, Bikeleon, Bicigrino<br>
+      Hospitales / route detail — Camino de Santiago forum &amp; walker guides<br>
+      Flights &amp; transfers — Rome2Rio, Skyscanner, flight-route listings<br>
+      Photos — Wikimedia Commons: Simon Burchell (Camino Primitivo Bedures, Puerto del Palo), Fernando (Oviedo cathedral), Fernando Pascullo (Lugo Roman walls), Lmbuga (Santiago cathedral), all CC BY-SA 4.0
+    </div>
+    <p class="disclaimer">
+      Prices, schedules and availability are estimates gathered for planning and change constantly — confirm everything (especially airfares and the SCQ airport closure) before booking. Daily distances and ascent are approximate and depend on the exact off-road line you choose. This dossier was put together as a planning aid, not a booking confirmation. Buen camino.
+    </p>
+  </div>
+</footer>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script>
+  // --- Route waypoints (indicative coordinates) ---
+  var stops = [
+    {n:"Oviedo",       c:[43.3614,-5.8593], d:"Start · Asturias"},
+    {n:"Salas",        c:[43.4106,-6.2607], d:"Day 2 · 52 km"},
+    {n:"Pola de Allande",c:[43.2731,-6.6090], d:"Day 3 · 48 km"},
+    {n:"A Fonsagrada", c:[43.1245,-7.0680], d:"Day 4 · 65 km · queen stage"},
+    {n:"Lugo",         c:[43.0125,-7.5558], d:"Day 5 · 57 km · Roman walls"},
+    {n:"Sedor",        c:[42.9466,-8.1316], d:"Day 6 · 55 km"},
+    {n:"Santiago de Compostela",c:[42.8806,-8.5446], d:"Finish · 45 km"}
+  ];
+  var melide = {n:"Melide", c:[42.9143,-8.0144], d:"Camino Francés junction"};
+
+  try {
+    var map = L.map('map',{scrollWheelZoom:false}).setView([43.13,-7.05], 8);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      maxZoom:17, attribution:'© OpenStreetMap'
+    }).addTo(map);
+
+    var line = stops.map(function(s){return s.c;});
+    L.polyline(line, {color:'#b5532a', weight:3.5, opacity:.85, dashArray:'1,0'}).addTo(map);
+
+    function dot(color,r){
+      return L.divIcon({className:'',html:'<div style="width:'+(r*2)+'px;height:'+(r*2)+'px;background:'+color+';border:2px solid #f4efe4;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,.35)"></div>',iconSize:[r*2,r*2],iconAnchor:[r,r]});
+    }
+
+    stops.forEach(function(s){
+      L.marker(s.c,{icon:dot('#1c3a30',7)}).addTo(map)
+        .bindPopup('<b style="font-family:Georgia,serif">'+s.n+'</b><br><span style="font-family:monospace;font-size:11px;color:#b5532a">'+s.d+'</span>');
+    });
+    // Melide diamond
+    L.marker(melide.c,{icon:L.divIcon({className:'',html:'<div style="width:13px;height:13px;background:#d99a2b;border:2px solid #f4efe4;transform:rotate(45deg);box-shadow:0 2px 5px rgba(0,0,0,.35)"></div>',iconSize:[13,13],iconAnchor:[7,7]})}).addTo(map)
+      .bindPopup('<b style="font-family:Georgia,serif">'+melide.n+'</b><br><span style="font-family:monospace;font-size:11px;color:#b5532a">'+melide.d+'</span>');
+
+    map.fitBounds(L.polyline(line).getBounds(), {padding:[40,40]});
+  } catch(e){
+    document.getElementById('map').innerHTML =
+      '<div style="padding:40px;font-family:monospace;color:#6b7268;text-align:center">Map could not load here — open this file in a browser to see the interactive route.<br><br>Oviedo → Salas → Pola de Allande → A Fonsagrada → Lugo → Sedor → Santiago</div>';
+  }
+</script>
+</body>
+</html>
